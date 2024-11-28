@@ -133,11 +133,8 @@
             // 
             // WaterMaskToolStripMenuItem
             // 
-            this.WaterMaskToolStripMenuItem.Enabled = false;
             this.WaterMaskToolStripMenuItem.Name = "WaterMaskToolStripMenuItem";
             this.WaterMaskToolStripMenuItem.Size = new System.Drawing.Size(152, 26);
-            this.WaterMaskToolStripMenuItem.Text = "图片水印";
-            this.WaterMaskToolStripMenuItem.Click += new System.EventHandler(this.WaterMaskToolStripMenuItem_Click_1);
             // 
             // 缩放ToolStripMenuItem
             // 
@@ -154,35 +151,35 @@
             // Scale30
             // 
             this.Scale30.Name = "Scale30";
-            this.Scale30.Size = new System.Drawing.Size(224, 26);
+            this.Scale30.Size = new System.Drawing.Size(145, 26);
             this.Scale30.Text = "33.33%";
             this.Scale30.Click += new System.EventHandler(this.Scale30_Click);
             // 
             // Scale50
             // 
             this.Scale50.Name = "Scale50";
-            this.Scale50.Size = new System.Drawing.Size(224, 26);
+            this.Scale50.Size = new System.Drawing.Size(145, 26);
             this.Scale50.Text = "50%";
             this.Scale50.Click += new System.EventHandler(this.Scale50_Click);
             // 
             // Scale80
             // 
             this.Scale80.Name = "Scale80";
-            this.Scale80.Size = new System.Drawing.Size(224, 26);
+            this.Scale80.Size = new System.Drawing.Size(145, 26);
             this.Scale80.Text = "80%";
             this.Scale80.Click += new System.EventHandler(this.Scale80_Click);
             // 
             // Scale100
             // 
             this.Scale100.Name = "Scale100";
-            this.Scale100.Size = new System.Drawing.Size(224, 26);
+            this.Scale100.Size = new System.Drawing.Size(145, 26);
             this.Scale100.Text = "100%";
             this.Scale100.Click += new System.EventHandler(this.Scale100_Click);
             // 
             // Scale200
             // 
             this.Scale200.Name = "Scale200";
-            this.Scale200.Size = new System.Drawing.Size(224, 26);
+            this.Scale200.Size = new System.Drawing.Size(145, 26);
             this.Scale200.Text = "200%";
             this.Scale200.Click += new System.EventHandler(this.Scale200_Click);
             // 
@@ -249,7 +246,7 @@
             this.ColorInvertToolStripMenuItem.Name = "ColorInvertToolStripMenuItem";
             this.ColorInvertToolStripMenuItem.Size = new System.Drawing.Size(198, 24);
             this.ColorInvertToolStripMenuItem.Text = "颜色反转";
-            this.ColorInvertToolStripMenuItem.Click += new System.EventHandler(this.ColorInvertToolStripMenuItem_Click);
+            this.ColorInvertToolStripMenuItem.CheckedChanged += new System.EventHandler(this.ColorInvertToolStripMenuItem_CheckedChanged);
             // 
             // SaveColorInvertToolStripMenuItem
             // 
@@ -292,7 +289,6 @@
             this.ImageBox.TabIndex = 0;
             this.ImageBox.TabStop = false;
             this.ImageBox.WaitOnLoad = true;
-            this.ImageBox.Click += new System.EventHandler(this.ImageBox_Click);
             this.ImageBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Image_MouseDown);
             this.ImageBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Image_MouseMove);
             this.ImageBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Image_MouseUp);

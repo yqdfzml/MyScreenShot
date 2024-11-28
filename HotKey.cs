@@ -4,52 +4,114 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Reflection;
+using System.Configuration;
+using System.Drawing.Printing;
+using System.IO;
+using System.Drawing.Imaging;
+using System.Security.Policy;
+using MyScreenShot.Properties;
+using System.Runtime.Remoting.Contexts;
+using static ScreenShot.MyEnum;
 
 namespace ScreenShot
 {
     public class HotKey
     {
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vk);
+        public static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, Keys vk);
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
-        [Flags()]
-        public enum KeysModifiers
+        private ConfigFileHelper configFileHelper = new ConfigFileHelper();
+
+        private Utils utils = new Utils();
+
+        //private string configpath = Application.StartupPath + "/config.ini";
+        private List<Config> configs = new List<Config>();
+
+        // 用于存储所有热键结构体的列表
+        private List<HotKeystruct> hotKeysList = new List<HotKeystruct>();
+
+        //注册全部热键
+        public  List<HotKeystruct> RegisterAllHotkeys(string configpath, IntPtr handle)
         {
-            None = 0,
-            Alt = 1,
-            Ctrl = 2,
-            Shift = 4,
-            WindowsKey = 8,
+            configFileHelper.ReadAllConfgig(configpath);
+            configs = configFileHelper.ReadAllConfgig(configpath);
+            int index = 100;
+            foreach (Config config in configs)
+            {
+                if (config.ConfigKey != "LastSave" && config.ConfigKey != "First")
+                {
+                    HotKeystruct hotKeystruct = utils.StringToKey(config.ConfigValue);
+                    hotKeystruct.functionname = config.ConfigKey;
+                    hotKeystruct.keycombina = config.ConfigValue;
+                    Console.WriteLine(hotKeystruct.modifiers +"--56--"+ hotKeystruct.keys);
+                    Console.WriteLine(index);
+                    bool res = RegisterHotKey(handle, index, hotKeystruct.modifiers, hotKeystruct.keys);
+                    hotKeystruct.regeditres = res;
+                    hotKeysList.Add(hotKeystruct);
+                    index++;
+                }
+                
+            }
+            return hotKeysList;
         }
 
-        [Flags()]
-        public enum Keys
+        //读取全部热键
+
+        public List<HotKeystruct> ReadAllHotkeys(string configpath, IntPtr handle)
         {
-            MOD_ALT = 0x0001,
-            MOD_CONTROL = 0x0002,
-            MOD_SHIFT = 0x0004,
-            MOD_WIN = 0x0008,
-            VK_SHIFT = 0x10, // Shift key  
-            VK_F1 = 0x70,
-            VK_F2 = 0x71,
-            VK_F3 = 0x72,
-            VK_F4 = 0x73,
-            VK_F5 = 0x74,
-            VK_F6 = 0x75,
-            VK_F7 = 0x76,
-            VK_F8 = 0x77,
-            VK_F9 = 0x78,
-            VK_F10 = 0x79,
-            VK_F11 = 0x7A,
-            VK_F12 = 0x7B,
+            configFileHelper.ReadAllConfgig(configpath);
+            configs = configFileHelper.ReadAllConfgig(configpath);
+            foreach (Config config in configs)
+            {
+                if (config.ConfigKey != "LastSave" && config.ConfigKey != "First")
+                {
+                    HotKeystruct hotKeystruct = utils.StringToKey(config.ConfigValue);
+                    hotKeystruct.functionname = config.ConfigKey;
+                    hotKeystruct.keycombina = config.ConfigValue;
+                    hotKeysList.Add(hotKeystruct);
+                }
+
+            }
+            return hotKeysList;
         }
 
 
+        //卸载全部热键
+        public static void UnRegisterAllHotkeys(IntPtr handle)
+        {
+            for(int i =100;i<104;i++)
+            {
+                //UnregisterHotKey(handle, i);
+                Console.WriteLine(i + "----unre-->" + UnregisterHotKey(handle, i));
+            }
 
+        }
+
+        //更新热键
+        public void Updatehotkey(List<string> strings, IntPtr handle)
+        {
+            int index = 100;
+            strings.ForEach(s =>
+            {
+                Console.WriteLine(s);
+                HotKeystruct hotKeystruct = utils.StringToKey(s);
+                bool res = RegisterHotKey(handle, index, hotKeystruct.modifiers, hotKeystruct.keys);
+                Console.WriteLine(index + "----re-->" + res);
+                index++;
+            });
+
+        }
+        
 
 
     }
+    
 }

@@ -24,105 +24,37 @@ namespace ScreenShot
         #endregion
 
 
-
-        //是否失焦
-        private bool isfocus = true;
-
         private readonly Utils utils = new Utils();
-
-        private readonly Form1 parentform;
-
         //初始缩放倍率
         private double ScaleRatio = 1.0;
-
         //初始尺寸
         private Size OrginalSize;
-
         //截取图像
         public Image ShotImage;
-
-        //private string RatioText;
-
-        //尺寸
-        //string SizeText;
-
-        //颜色反转
-        private bool ColorInvert;
-
-        //像素化
-        private bool PixelInvert;
-
         //颜色反转图片
         private Bitmap ColorInvertBItmap;
-
-        //像素化图片
-        //private Bitmap PixelInvertBItmap;
-
         //颜色是否已反转
-        private bool ColorInvertStatus = true;
-
+        private bool ColorInvertStatus;
         public string WaterMaskStr;
 
-
-        //文件保存位置
-        private string savepath;
-
-
-        public Form2(Form1 parent, Image image)
+        public Form2( Image image)
         {
-
-
-
             InitializeComponent();
-
-            this.FormBorderStyle = FormBorderStyle.None;
-            parentform = parent;
             ShotImage = ImageBox.Image = image;
-            this.Size = ImageBox.Size = OrginalSize = image.Size;
+            Size = OrginalSize = image.Size;
             //截图完成后自动保存图片
             utils.SaveImage(ShotImage, true);
-            savepath = utils.exposeFolderpath();
-            parentform.SetLastPath(savepath);
+            Console.WriteLine(Config.folderpath);
+            ConfigFileHelper.WritePrivateProfileString("LastSavepath", "LastSave", Config.folderpath, Application.StartupPath + "/config.ini");
         }
 
 
 
         private void Form2_Load(object sender, EventArgs e)
         {
+            ColorInvertStatus = ColorInvertToolStripMenuItem.Checked;
             ImageBox.MouseWheel += new MouseEventHandler(MY_MouseWheel);
-            SizeBoxText.Text = utils.GetSize(Size);
-            ColorInvert = ColorInvertToolStripMenuItem.Checked;
-            WaterMaskStr = parentform.WaterMaskTextStr;
-
         }
-
-        //protected override void WndProc(ref Message m)
-        //{
-        //const int WM_MOUSEWHEEL = 0x020A;
-        //if (m.Msg == WM_MOUSEWHEEL)
-        //{
-        //        int delta = (int)m.WParam.ToInt32() >> 16;
-        //    if (delta < 0)
-        //    {
-        //        ScaleRatio -= 0.05;
-        //        if (ScaleRatio <= 0.3)
-        //        {
-        //            ScaleRatio = 0.3;
-        //        }
-        //        //Console.WriteLine("down");
-        //    }
-        //    else
-        //    {
-        //        //Console.WriteLine("up");
-        //        ScaleRatio += 0.05;
-        //    }
-
-        //    utils.Resizeform(ScaleRatio, this, ScaleText, OrginalSize,ImageBox);
-
-        //}
-        //base.WndProc(ref m);
-
-        //}
 
 
         //鼠标滚轮事件 改变透明度
@@ -319,54 +251,49 @@ namespace ScreenShot
         }
 
 
+
+
         //在文件夹中查看
         private void LookFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            utils.LookFile();
+        }
 
-            utils.LookFile(ImageBox);
+        
+
+        //另存为
+        private void SaveColorInvertToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            utils.SaveImage(ColorInvertBItmap, false);
 
         }
 
-        private void ColorInvertToolStripMenuItem_Click(object sender, EventArgs e)
+
+
+        //查看图片
+        private void viewImage_Click(object sender, EventArgs e)
         {
-            PixelInvert = !PixelInvert;
-            ColorInvertBItmap = utils.ColorInvert(ShotImage);
-            if (PixelInvert)
+            utils.ViewImage();
+        }
+        //颜色反转
+        private void ColorInvertToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            ColorInvertStatus = ColorInvertToolStripMenuItem.Checked;
+
+            if(ColorInvertStatus)
             {
-                if (ColorInvertBItmap != null)
+                ColorInvertBItmap = utils.ColorInvert(ShotImage);
+                if(ColorInvertBItmap != null)
                 {
                     ImageBox.Image = ColorInvertBItmap;
-                    ColorInvertStatus = true;
                     SaveColorInvertToolStripMenuItem.Enabled = ColorInvertStatus;
                 }
+                
             }
             else
             {
                 ImageBox.Image = ShotImage;
             }
-        }
-
-        private void SaveColorInvertToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            utils.SaveImage(ColorInvertBItmap, true);
-
-        }
-
-
-        private void WaterMaskToolStripMenuItem_Click_1(object sender, EventArgs e)
-        {
-
-
-        }
-
-        private void ImageBox_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void viewImage_Click(object sender, EventArgs e)
-        {
-            utils.ViewImage();
         }
     }
 }

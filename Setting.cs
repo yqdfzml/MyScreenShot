@@ -13,16 +13,9 @@ namespace ScreenShot
     public partial class Setting : Form
     {
 
-        #region
-        //private readonly int AreahotKeyId = 100; // 热键ID，必须是唯一的
-        //private readonly int AllhotKeyId = 101; // 热键ID，必须是唯一的
-        //private readonly int CopyAutohotKeyId = 102; // 热键ID，必须是唯一的
-        private string AreaKeyCombination = "";
-        private string AllKeyCombination = "";
-        private string CopyAutoCombination = "";
-        private string TietuCombination = "";
-        private string WaterMaskTextStr;
-        #endregion
+  
+
+
 
 
         //快捷键冲突状态
@@ -32,6 +25,24 @@ namespace ScreenShot
         public bool CopAutoStatus;
         #endregion
 
+        //快捷键列表
+        private List<string> hotkeylist = new List<string>();
+
+        public string NewKeyCombination;
+        public string AllKeyCombination;
+        public string CopyAutoCombination;
+        public string TietuCombination;
+
+        //private List<string> hotkeycombinations = new List<string>
+        //{
+        //    NewKeyCombination,
+        //    AllKeyCombination,
+        //    CopyAutoCombination,
+        //    TietuCombination
+        //};
+
+
+
 
         public string configpath;
         private ConfigFileHelper configFileHelper;
@@ -40,38 +51,51 @@ namespace ScreenShot
 
         private readonly Utils utils = new Utils();
 
+        private readonly HotKey hotKey = new HotKey();
+
+        //是否进行热键修改
+        //private bool ho
+
         public Setting(Form1 parentform)
         {
             InitializeComponent();
             this.parentform = parentform;
-            configFileHelper = parentform.configFileHelper;
-            configpath = parentform.configpath;
+
         }
 
         private void Setting_Load(object sender, EventArgs e)
         {
-            ReadConfig(configFileHelper, configpath);
-            //WaterMaskText.Text = WaterMaskTextStr;
-            utils.UnHook(parentform.Handle, 100);
-            utils.UnHook(parentform.Handle, 101);
-            utils.UnHook(parentform.Handle, 102);
-            utils.UnHook(parentform.Handle, 103);
-
+            HotKey.UnRegisterAllHotkeys(parentform.Handle);
+            ReadConfig();
         }
 
 
         //读取配置文件
-        private void ReadConfig(ConfigFileHelper configFileHelper, string configpath)
+        private void ReadConfig()
         {
-            AreaKeyCombination = configFileHelper.ReadConfig("HotKeys", "AreaKeyCombination", "", 1024, configpath);
-            AllKeyCombination = configFileHelper.ReadConfig("HotKeys", "AllKeyCombination", "", 1024, configpath);
-            CopyAutoCombination = configFileHelper.ReadConfig("HotKeys", "CopyAutoCombination", "", 1024, configpath);
-            TietuCombination = configFileHelper.ReadConfig("HotKeys", "TietuCombination", "", 1024, configpath);
-            WaterMaskTextStr = configFileHelper.ReadConfig("WaterMask", "WaterMaskStr", "", 1024, configpath);
-            AreaHotKeyBox.Text = AreaKeyCombination.ToString();
-            AllHotKeyBox.Text = AllKeyCombination.ToString();
-            AutoCopyHotKeyBox.Text = CopyAutoCombination.ToString();
-            //Console.WriteLine("AreaStatusText1---->" + AreaStatusText1);
+            List<MyEnum.HotKeystruct> hotKeystructs = hotKey.ReadAllHotkeys(parentform.configpath, Handle);
+
+            hotKeystructs.ForEach(hotKeystruct =>
+            {
+                Console.WriteLine(hotKeystruct.functionname + "---->" + hotKeystruct.keycombina);
+                
+                switch (hotKeystruct.functionname)
+                {
+                    case "NewKeyCombination":
+                        NewKeyCombination =  NewHotKeyBox.Text = hotKeystruct.keycombina;
+                        break;
+                    case "AllKeyCombination":
+                        AllKeyCombination =  AllHotKeyBox.Text = hotKeystruct.keycombina;
+                        break;
+                    case "CopyAutoCombination":
+                        CopyAutoCombination =  CopyAutoHotKeyBox.Text = hotKeystruct.keycombina;
+                        break;
+                    case "TietuCombination":
+                        TietuCombination =  TietuHotKeyBox.Text = hotKeystruct.keycombina;
+                        break;
+                }
+
+            });
         }
 
 
@@ -79,73 +103,67 @@ namespace ScreenShot
         //保存配置
         private void SaveButton_Click(object sender, EventArgs e)
         {
-            if (AreaKeyCombination == AllKeyCombination ||
-                AreaKeyCombination == CopyAutoCombination ||
-                CopyAutoCombination == AllKeyCombination
-                )
-            {
-                MessageBox.Show("快捷键冲突");
-                ResetButton_Click(null, null);
-            }
-            else
-            {
-                configFileHelper.WriteConfig("HotKeys", "AreaKeyCombination", AreaKeyCombination, configpath);
-                configFileHelper.WriteConfig("HotKeys", "AllKeyCombination", AllKeyCombination, configpath);
-                configFileHelper.WriteConfig("HotKeys", "CopyAutoCombination", CopyAutoCombination, configpath);
-                configFileHelper.WriteConfig("HotKeys", "TietuCombination", TietuCombination, configpath);
-                configFileHelper.WriteConfig("WaterMask", "WaterMaskStr", WaterMaskTextStr, configpath);
-                parentform.ReadConfig(configFileHelper, configpath);
-                MessageBox.Show("快捷键更新成功");
-            }
+            hotkeylist.Add(NewKeyCombination);
+            hotkeylist.Add(AllKeyCombination);
+            hotkeylist.Add(CopyAutoCombination);
+            hotkeylist.Add(TietuCombination);
+
+            Console.WriteLine("-sad--->"+hotkeylist);
+
+            hotKey.Updatehotkey(hotkeylist, parentform.Handle);
         }
 
         //重置
         private void ResetButton_Click(object sender, EventArgs e)
         {
-            parentform.CreateConfigInit(configFileHelper, configpath);
-            //热更新
-            ReadConfig(configFileHelper, configpath);
+            parentform.CreateConfigInit(parentform.configFileHelper, parentform.configpath);
+            ReadConfig();
 
         }
 
-        private void AreaHotKeyBox_KeyDown(object sender, KeyEventArgs e)
+ 
+
+        //新建截图
+        private void NewHotKeyBox_KeyDown(object sender, KeyEventArgs e)
         {
-            AreaHotKeyBox.Text = AreaKeyCombination = utils.UpdateHotKeyCom(e);
-            //Console.WriteLine(AreaKeyCombination);
+            NewKeyCombination = NewHotKeyBox.Text = utils.UpdateHotKeyCom(e);
+
         }
 
-
-        private void AreaHotKeyBox_KeyPress(object sender, KeyPressEventArgs e)
+        private void NewHotKeyBox_KeyPress(object sender, KeyPressEventArgs e)
         {
+            
             e.Handled = true;
         }
-        private void AutoCopyHotKeyBox_KeyPress(object sender, KeyPressEventArgs e)
+
+        //截图复制
+        private void CopyAutoHotKeyBox_KeyDown(object sender, KeyEventArgs e)
         {
-            e.Handled = true;
+            CopyAutoCombination = CopyAutoHotKeyBox.Text = utils.UpdateHotKeyCom(e);
+
+        }
+        private void CopyAutoHotKeyBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled  =true;
+        }
+
+        //全屏截图
+        private void AllHotKeyBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            AllKeyCombination = AllHotKeyBox.Text  = utils.UpdateHotKeyCom(e);
+
+
         }
         private void AllHotKeyBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             e.Handled = true;
         }
-        private void AllHotKeyBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            AllHotKeyBox.Text = AllKeyCombination = utils.UpdateHotKeyCom(e);
 
-        }
-
-        private void AutoCopyHotKeyBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            AutoCopyHotKeyBox.Text = CopyAutoCombination = utils.UpdateHotKeyCom(e);
-        }
-
-        private void WaterMaskText_TextChanged(object sender, EventArgs e)
-        {
-            //parentform.WaterMaskTextStr = WaterMaskTextStr = WaterMaskText.Text;
-        }
-
+        //贴图
         private void TietuBox_KeyDown(object sender, KeyEventArgs e)
         {
-            TietuBox.Text = TietuCombination = utils.UpdateHotKeyCom(e);
+            TietuCombination = TietuHotKeyBox.Text =  utils.UpdateHotKeyCom(e);
+
         }
 
         private void TietuBox_KeyPress(object sender, KeyPressEventArgs e)

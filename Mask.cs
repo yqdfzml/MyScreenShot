@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static ScreenShot.MyEnum;
 
 
 namespace ScreenShot
@@ -29,10 +30,15 @@ namespace ScreenShot
         public Rectangle FinalRect;
         //最终图像
         public Image FinalImage;
+        //截图类型
+        public int shottype;
+        //显示窗口
+        private Form2 displaywindow;
 
 
-        public Mask(Form1 parent, int ShotType)
+        public Mask(Form1 parent,  int ShotType)
         {
+            shottype = ShotType;
             InitializeComponent();
             parentform = parent;
 
@@ -40,22 +46,24 @@ namespace ScreenShot
 
         private void Mask_Load(object sender, EventArgs e)
         {
-            InitializeComponent();
-
+            
         }
 
-
+        //绘制结束
         private void OverDraw()
         {
             FinalRect = utils.GetRectangle(StartPoint, EndPoint);
             FinalImage = utils.GetFinalImage(FinalRect);
-            if (parentform.CopyAuto)
+            if(displaywindow == null)
+            {
+                displaywindow = new Form2(FinalImage);
+            }
+            displaywindow.Show();
+            if (shottype == 3)
             {
                 utils.CopyImage(FinalImage);
             }
-
-            parentform.SetImage(FinalImage);
-
+            this.Close();
             this.Dispose();
         }
 
@@ -65,6 +73,7 @@ namespace ScreenShot
             {
                 Drawwing = true;
                 StartPoint = new Point(e.X, e.Y);
+
             }
             else if (e.Button == MouseButtons.Right)
             {
@@ -92,9 +101,7 @@ namespace ScreenShot
                 Drawwing = false;
                 //获取当前鼠标位置
                 EndPoint = e.Location;
-                this.Close();
                 OverDraw();
-                this.Dispose(true);
             }
         }
 
@@ -119,12 +126,20 @@ namespace ScreenShot
 
                     e.Graphics.DrawRectangle(pen, rect);
 
+                    // 定义文本字符串、字体、画笔和位置
+                    string cinchutext = rect.Size.ToString().Replace('{',' ').Replace('}', ' ');
+                    string zuobiaotext = CurrentPoint.ToString().Replace('{',' ').Replace('}', ' ');
+
+                    Font textFont = new Font("simhei", 10);
 
                     // 设置背景颜色并使用SolidBrush填充矩形  
                     Color backgroundColor = Color.White;
                     using (SolidBrush backgroundBrush = new SolidBrush(backgroundColor))
                     {
                         e.Graphics.FillRectangle(backgroundBrush, rect);
+                        // 绘制文本
+                        e.Graphics.DrawString(cinchutext, textFont, backgroundBrush, formLocation);
+                        e.Graphics.DrawString(zuobiaotext, textFont, backgroundBrush, new Point(formLocation.X,formLocation.Y+20));
                     }
                 }
             }

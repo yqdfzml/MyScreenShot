@@ -33,14 +33,14 @@
             this.SaveButton = new System.Windows.Forms.Label();
             this.ResetButton = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.AreaHotKeyBox = new System.Windows.Forms.TextBox();
+            this.NewHotKeyBox = new System.Windows.Forms.TextBox();
             this.AllHotKeyBox = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.AutoCopyHotKeyBox = new System.Windows.Forms.TextBox();
+            this.CopyAutoHotKeyBox = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label3 = new System.Windows.Forms.Label();
-            this.TietuBox = new System.Windows.Forms.TextBox();
+            this.TietuHotKeyBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -90,16 +90,16 @@
             this.label1.TabIndex = 24;
             this.label1.Text = "区域截图";
             // 
-            // AreaHotKeyBox
+            // NewHotKeyBox
             // 
-            this.AreaHotKeyBox.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.AreaHotKeyBox.Location = new System.Drawing.Point(181, 30);
-            this.AreaHotKeyBox.Name = "AreaHotKeyBox";
-            this.AreaHotKeyBox.Size = new System.Drawing.Size(127, 27);
-            this.AreaHotKeyBox.TabIndex = 25;
-            this.AreaHotKeyBox.Text = "F1";
-            this.AreaHotKeyBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.AreaHotKeyBox_KeyDown);
-            this.AreaHotKeyBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.AreaHotKeyBox_KeyPress);
+            this.NewHotKeyBox.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.NewHotKeyBox.Location = new System.Drawing.Point(181, 30);
+            this.NewHotKeyBox.Name = "NewHotKeyBox";
+            this.NewHotKeyBox.Size = new System.Drawing.Size(127, 27);
+            this.NewHotKeyBox.TabIndex = 25;
+            this.NewHotKeyBox.Text = "F1";
+            this.NewHotKeyBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.NewHotKeyBox_KeyDown);
+            this.NewHotKeyBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NewHotKeyBox_KeyPress);
             // 
             // AllHotKeyBox
             // 
@@ -122,16 +122,16 @@
             this.label4.TabIndex = 27;
             this.label4.Text = "全屏截图";
             // 
-            // AutoCopyHotKeyBox
+            // CopyAutoHotKeyBox
             // 
-            this.AutoCopyHotKeyBox.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Bold);
-            this.AutoCopyHotKeyBox.Location = new System.Drawing.Point(181, 137);
-            this.AutoCopyHotKeyBox.Name = "AutoCopyHotKeyBox";
-            this.AutoCopyHotKeyBox.Size = new System.Drawing.Size(127, 27);
-            this.AutoCopyHotKeyBox.TabIndex = 31;
-            this.AutoCopyHotKeyBox.Text = "Ctrl+F3";
-            this.AutoCopyHotKeyBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.AutoCopyHotKeyBox_KeyDown);
-            this.AutoCopyHotKeyBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.AutoCopyHotKeyBox_KeyPress);
+            this.CopyAutoHotKeyBox.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Bold);
+            this.CopyAutoHotKeyBox.Location = new System.Drawing.Point(181, 137);
+            this.CopyAutoHotKeyBox.Name = "CopyAutoHotKeyBox";
+            this.CopyAutoHotKeyBox.Size = new System.Drawing.Size(127, 27);
+            this.CopyAutoHotKeyBox.TabIndex = 31;
+            this.CopyAutoHotKeyBox.Text = "Ctrl+F3";
+            this.CopyAutoHotKeyBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CopyAutoHotKeyBox_KeyDown);
+            this.CopyAutoHotKeyBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.CopyAutoHotKeyBox_KeyPress);
             // 
             // label6
             // 
@@ -147,10 +147,10 @@
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Controls.Add(this.label3);
-            this.panel1.Controls.Add(this.TietuBox);
+            this.panel1.Controls.Add(this.TietuHotKeyBox);
             this.panel1.Controls.Add(this.label1);
-            this.panel1.Controls.Add(this.AreaHotKeyBox);
-            this.panel1.Controls.Add(this.AutoCopyHotKeyBox);
+            this.panel1.Controls.Add(this.NewHotKeyBox);
+            this.panel1.Controls.Add(this.CopyAutoHotKeyBox);
             this.panel1.Controls.Add(this.label6);
             this.panel1.Controls.Add(this.label4);
             this.panel1.Controls.Add(this.AllHotKeyBox);
@@ -169,16 +169,16 @@
             this.label3.TabIndex = 33;
             this.label3.Text = "贴图";
             // 
-            // TietuBox
+            // TietuHotKeyBox
             // 
-            this.TietuBox.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.TietuBox.Location = new System.Drawing.Point(181, 187);
-            this.TietuBox.Name = "TietuBox";
-            this.TietuBox.Size = new System.Drawing.Size(127, 27);
-            this.TietuBox.TabIndex = 34;
-            this.TietuBox.Text = "F4";
-            this.TietuBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TietuBox_KeyDown);
-            this.TietuBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TietuBox_KeyPress);
+            this.TietuHotKeyBox.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.TietuHotKeyBox.Location = new System.Drawing.Point(181, 187);
+            this.TietuHotKeyBox.Name = "TietuHotKeyBox";
+            this.TietuHotKeyBox.Size = new System.Drawing.Size(127, 27);
+            this.TietuHotKeyBox.TabIndex = 34;
+            this.TietuHotKeyBox.Text = "F4";
+            this.TietuHotKeyBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TietuBox_KeyDown);
+            this.TietuHotKeyBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TietuBox_KeyPress);
             // 
             // label2
             // 
@@ -220,14 +220,14 @@
         private System.Windows.Forms.Label SaveButton;
         private System.Windows.Forms.Label ResetButton;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox AreaHotKeyBox;
+        private System.Windows.Forms.TextBox NewHotKeyBox;
         private System.Windows.Forms.TextBox AllHotKeyBox;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox AutoCopyHotKeyBox;
+        private System.Windows.Forms.TextBox CopyAutoHotKeyBox;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox TietuBox;
+        private System.Windows.Forms.TextBox TietuHotKeyBox;
     }
 }

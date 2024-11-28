@@ -11,36 +11,24 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static ScreenShot.MyEnum;
 
 
 namespace ScreenShot
 {
     public class Utils
     {
-        #region
-        private const int MOD_ALT = 0x0001;
-        private const int MOD_CONTROL = 0x0002;
-        private const int MOD_SHIFT = 0x0004;
-        private const int MOD_WIN = 0x0008;
-        private const int VK_SHIFT = 0x10; // Shift key  
-        private const int VK_F1 = 0x70;
-        private const int VK_F2 = 0x71;
-        private const int VK_F3 = 0x72;
-        private const int VK_F4 = 0x73;
-        private const int VK_F5 = 0x74;
-        private const int VK_F6 = 0x75;
-        private const int VK_F7 = 0x76;
-        private const int VK_F8 = 0x77;
-        private const int VK_F9 = 0x78;
-        private const int VK_F10 = 0x79;
-        private const int VK_F11 = 0x7A;
-        private const int VK_F12 = 0x7B;
-        #endregion
+       
 
         private HotKey HotKey;
 
-        //上一次的保存文件名称
-        public string folderpath;
+
+
+        //配置文件
+        //#region
+        //public string configpath = Application.StartupPath + "/config.ini";
+        //public ConfigFileHelper configFileHelper = new ConfigFileHelper();
+        //#endregion
 
         //复制图片函数
         public void CopyImage(System.Drawing.Image image)
@@ -120,9 +108,6 @@ namespace ScreenShot
                                 image.Save(FileName, System.Drawing.Imaging.ImageFormat.Png);
                                 break;
                         }
-
-
-
                     }
                     else
                     {
@@ -134,20 +119,12 @@ namespace ScreenShot
             {
                 Console.WriteLine("自动保存");
                 string filename = GetFileName() + ".png";
-                folderpath = Path.Combine(CreateFile(filename), filename);
+                Config.folderpath = Path.Combine(CreateFile(filename), filename);
                 System.Drawing.Imaging.ImageFormat format = System.Drawing.Imaging.ImageFormat.Png;
-                Console.WriteLine("------->" + folderpath);
-                //将 folderpath 暴露给form2
-                image.Save(folderpath, format);
+                Console.WriteLine("------->" + Config.folderpath);
+                image.Save(Config.folderpath, format);
             }
         }
-
-        //将 folderpath 暴露给form2
-        public string exposeFolderpath()
-        {
-            return folderpath;
-        }
-
 
         //截取全屏图片
         public async Task<Bitmap> ScreenBack()
@@ -240,112 +217,113 @@ namespace ScreenShot
 
 
         //注册热键
-        public bool ReHook(IntPtr handle, int HotkeyId, int Modifiers, int vk)
-        {
-            return HotKey.RegisterHotKey(handle, HotkeyId, Modifiers, vk);
+        //public bool ReHook(IntPtr handle, int HotkeyId, int Modifiers, int vk)
+        //{
+            //return HotKey.RegisterHotKey(handle, HotkeyId, Modifiers, vk);
 
-        }
+        //}
         //卸载热键
         public bool UnHook(IntPtr handle, int HotkeyId)
         {
             return HotKey.UnregisterHotKey(handle, HotkeyId);
+
         }
 
 
         //更新注册快捷键函数
         public bool UpDateHotKey(string keys, int KeyId, IntPtr handle)
         {
+            return true;
+            ////Console.WriteLine("keys---->" + keys);
 
-            //Console.WriteLine("keys---->" + keys);
+            //List<string> TempkeyList = keys.Split('+').ToList();
 
-            List<string> TempkeyList = keys.Split('+').ToList();
+            //int modifiers = 0;
+            //int vk = 0;
 
-            int modifiers = 0;
-            int vk = 0;
+            ////Console.WriteLine("keys0---->" + TempkeyList[0] + "keys1---->" + TempkeyList[1]);
 
-            //Console.WriteLine("keys0---->" + TempkeyList[0] + "keys1---->" + TempkeyList[1]);
+            //foreach (string key in TempkeyList)
+            //{
+            //    switch (key.ToUpper())
+            //    {
+            //        case "CTRL":
+            //            modifiers |= MOD_CONTROL;
+            //            break;
+            //        case "ALT":
+            //            modifiers |= MOD_ALT;
+            //            break;
+            //        case "SHIFT":
+            //            modifiers |= MOD_SHIFT;
+            //            break;
+            //        case "WIN":
+            //            modifiers |= MOD_WIN;
+            //            break;
+            //        case "F1":
+            //            vk |= VK_F1;
+            //            break;
+            //        case "F2":
+            //            vk |= VK_F2;
+            //            break;
+            //        case "F3":
+            //            vk |= VK_F3;
+            //            break;
+            //        case "F4":
+            //            vk |= VK_F4;
+            //            break;
+            //        case "F5":
+            //            vk |= VK_F5;
+            //            break;
+            //        case "F6":
+            //            vk |= VK_F6;
+            //            break;
+            //        case "F7":
+            //            vk |= VK_F7;
+            //            break;
+            //        case "F8":
+            //            vk |= VK_F8;
+            //            break;
+            //        case "F9":
+            //            vk |= VK_F9;
+            //            break;
+            //        case "F10":
+            //            vk |= VK_F10;
+            //            break;
+            //        case "F11":
+            //            vk |= VK_F11;
+            //            break;
+            //        case "F12":
+            //            vk |= VK_F12;
+            //            break;
+            //        case "shift":
+            //            vk |= VK_SHIFT;
+            //            break;
+            //        default:
+            //            if (char.IsLetter(key[0]) && char.IsUpper(key[0]))
+            //            {
+            //                vk = (key[0] - 'A' + (int)Keys.A);
+            //            }
+            //            break;
+            //    }
+            //}
 
-            foreach (string key in TempkeyList)
-            {
-                switch (key.ToUpper())
-                {
-                    case "CTRL":
-                        modifiers |= MOD_CONTROL;
-                        break;
-                    case "ALT":
-                        modifiers |= MOD_ALT;
-                        break;
-                    case "SHIFT":
-                        modifiers |= MOD_SHIFT;
-                        break;
-                    case "WIN":
-                        modifiers |= MOD_WIN;
-                        break;
-                    case "F1":
-                        vk |= VK_F1;
-                        break;
-                    case "F2":
-                        vk |= VK_F2;
-                        break;
-                    case "F3":
-                        vk |= VK_F3;
-                        break;
-                    case "F4":
-                        vk |= VK_F4;
-                        break;
-                    case "F5":
-                        vk |= VK_F5;
-                        break;
-                    case "F6":
-                        vk |= VK_F6;
-                        break;
-                    case "F7":
-                        vk |= VK_F7;
-                        break;
-                    case "F8":
-                        vk |= VK_F8;
-                        break;
-                    case "F9":
-                        vk |= VK_F9;
-                        break;
-                    case "F10":
-                        vk |= VK_F10;
-                        break;
-                    case "F11":
-                        vk |= VK_F11;
-                        break;
-                    case "F12":
-                        vk |= VK_F12;
-                        break;
-                    case "shift":
-                        vk |= VK_SHIFT;
-                        break;
-                    default:
-                        if (char.IsLetter(key[0]) && char.IsUpper(key[0]))
-                        {
-                            vk = (key[0] - 'A' + (int)Keys.A);
-                        }
-                        break;
-                }
-            }
-
-            if (vk == 0)
-            {
-                // 如果没有指定具体的键（只有修饰键），则无法注册热键  
-                MessageBox.Show("热键不能只包含功能键");
-                return false;
-            }
-            if (!HotKey.RegisterHotKey(handle, KeyId, modifiers, vk))
-            {
-                MessageBox.Show("热键注册失败");
-                return false;
-            }
+            //if (vk == 0)
+            //{
+            //    // 如果没有指定具体的键（只有修饰键），则无法注册热键  
+            //    MessageBox.Show("热键不能只包含功能键");
+            //    return false;
+            //}
+            //if (!HotKey.RegisterHotKey(handle, KeyId, modifiers, vk))
+            //{
+            //    MessageBox.Show("热键注册失败");
+            //    return false;
+            //}
             //else
             //{
             //    MessageBox.Show("热键注册成功");
             //}
 
-            return true;
+            //return true;
         }
 
         //获取尺寸
@@ -359,39 +337,27 @@ namespace ScreenShot
 
 
         //在文件夹中查看
-        public void LookFile(PictureBox pictureBox)
+        public void LookFile()
         {
-            //Process.Start(new ProcessStartInfo { FileName = "explorer.exe", Arguments = folderpath })
 
-            Process.Start("explorer.exe", "/select, " + folderpath);
+            //Console.WriteLine(Config.folderpath);
+
+            Process.Start("explorer.exe", "/select, " + Config.folderpath);
 
         }
 
         //预览查看图像
         public void ViewImage()
         {
-            Process.Start(new ProcessStartInfo { FileName = "explorer.exe", Arguments = folderpath });
+            Console.WriteLine(Config.folderpath);
+
+            Process.Start(new ProcessStartInfo { FileName = "explorer.exe", Arguments = Config.folderpath});
 
         }
 
 
         //像素化
-        //public Bitmap PixelInvert(Image image)
-        //{
-        //    Bitmap originalBitmap = (Bitmap)image;
-        //    Random random = new Random();
-        //    Bitmap invertedBitmap = new Bitmap(originalBitmap.Width, originalBitmap.Height);
-        //    for (int x = 0; x < originalBitmap.Width; x++)
-        //    {
-        //        for (int y = 0; y < originalBitmap.Height; y++)
-        //        {
-        //            Color originalColor = originalBitmap.GetPixel(x, y);
-        //            Color invertedColor = Color.FromArgb(Math.Abs(random.Next(150, 255) - originalColor.R), Math.Abs(random.Next(80, 255) - originalColor.G), Math.Abs(random.Next(120, 255) - originalColor.B));
-        //            invertedBitmap.SetPixel(x, y, invertedColor);
-        //        }
-        //    }
-        //    return invertedBitmap;
-        //}
+
 
 
         //颜色反转
@@ -425,7 +391,7 @@ namespace ScreenShot
             }
             if (e.Control)
             {
-                KeyCombination += "Ctrl+";
+                KeyCombination += "Control+";
             }
             if (e.Shift)
             {
@@ -439,6 +405,67 @@ namespace ScreenShot
             return KeyCombination;
 
         }
+
+
+        static bool IsModifierKey(Keys key)
+        {
+            // Check if the key is a modifier key
+            return key == Keys.Control ||
+                   key == Keys.Shift ||
+                   key == Keys.Alt ||
+                   key == Keys.LControlKey ||
+                   key == Keys.RControlKey ||
+                   key == Keys.LShiftKey ||
+                   key == Keys.RShiftKey ||
+                   key == Keys.LMenu ||
+                   key == Keys.RMenu ||
+                   key == Keys.LWin||
+                   key == Keys.RWin
+                   ;
+        }
+
+        //热键配置
+        public HotKeystruct StringToKey(string configstring)
+        {
+            string[] keys = configstring.Split('+');
+            HotKeystruct result = new HotKeystruct {
+                modifiers = (int)KeysModifiers.MOD_NONE,
+                keys = Keys.None
+            };
+            foreach (string key in keys)
+            {
+                string trimkey = key.Trim();
+                if (Enum.TryParse(trimkey, true, out Keys parsedKey))
+                {
+                    if (IsModifierKey(parsedKey))
+                    {
+                        switch (parsedKey)
+                        {
+                            case Keys.Control:
+                                result.modifiers = (int)KeysModifiers.MOD_CONTROL;
+                                break;
+                            case Keys.Alt:
+                                result.modifiers = (int)KeysModifiers.MOD_ALT;
+                                break;
+                            case Keys.Shift:
+                                result.modifiers = (int)KeysModifiers.MOD_SHIFT;
+                                break;
+   
+                        }
+                        //Console.WriteLine("-->>>"+result.modifiers);
+                    }
+                    else
+                    {
+                        result.keys = parsedKey;
+                    }
+                }
+
+            }
+            return result;
+        }
+
+        
+
 
     }
 }
