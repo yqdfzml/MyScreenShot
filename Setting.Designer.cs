@@ -39,6 +39,10 @@
             this.CopyAutoHotKeyBox = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label7 = new System.Windows.Forms.Label();
+            this.EndReHotKeyBox = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.BeginReHotKeyBox = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.TietuHotKeyBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -129,7 +133,7 @@
             this.CopyAutoHotKeyBox.Name = "CopyAutoHotKeyBox";
             this.CopyAutoHotKeyBox.Size = new System.Drawing.Size(127, 27);
             this.CopyAutoHotKeyBox.TabIndex = 31;
-            this.CopyAutoHotKeyBox.Text = "Ctrl+F3";
+            this.CopyAutoHotKeyBox.Text = "Control+F3";
             this.CopyAutoHotKeyBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CopyAutoHotKeyBox_KeyDown);
             this.CopyAutoHotKeyBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.CopyAutoHotKeyBox_KeyPress);
             // 
@@ -146,6 +150,10 @@
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.label7);
+            this.panel1.Controls.Add(this.EndReHotKeyBox);
+            this.panel1.Controls.Add(this.label5);
+            this.panel1.Controls.Add(this.BeginReHotKeyBox);
             this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.TietuHotKeyBox);
             this.panel1.Controls.Add(this.label1);
@@ -156,8 +164,50 @@
             this.panel1.Controls.Add(this.AllHotKeyBox);
             this.panel1.Location = new System.Drawing.Point(23, 52);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(472, 291);
+            this.panel1.Size = new System.Drawing.Size(472, 344);
             this.panel1.TabIndex = 33;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("微软雅黑 Light", 10.8F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label7.Location = new System.Drawing.Point(72, 283);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(82, 24);
+            this.label7.TabIndex = 37;
+            this.label7.Text = "停止录制";
+            // 
+            // EndReHotKeyBox
+            // 
+            this.EndReHotKeyBox.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.EndReHotKeyBox.Location = new System.Drawing.Point(181, 280);
+            this.EndReHotKeyBox.Name = "EndReHotKeyBox";
+            this.EndReHotKeyBox.Size = new System.Drawing.Size(127, 27);
+            this.EndReHotKeyBox.TabIndex = 38;
+            this.EndReHotKeyBox.Text = "Control+F2";
+            this.EndReHotKeyBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.EndReHotKeyBox_KeyDown);
+            this.EndReHotKeyBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EndReHotKeyBox_KeyPress);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("微软雅黑 Light", 10.8F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label5.Location = new System.Drawing.Point(72, 237);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(82, 24);
+            this.label5.TabIndex = 35;
+            this.label5.Text = "开始录制";
+            // 
+            // BeginReHotKeyBox
+            // 
+            this.BeginReHotKeyBox.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.BeginReHotKeyBox.Location = new System.Drawing.Point(181, 234);
+            this.BeginReHotKeyBox.Name = "BeginReHotKeyBox";
+            this.BeginReHotKeyBox.Size = new System.Drawing.Size(127, 27);
+            this.BeginReHotKeyBox.TabIndex = 36;
+            this.BeginReHotKeyBox.Text = "Control+F7";
+            this.BeginReHotKeyBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.BeginReHotKeyBox_KeyDown);
+            this.BeginReHotKeyBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BeginReHotKeyBox_KeyPress);
             // 
             // label3
             // 
@@ -229,5 +279,9 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox TietuHotKeyBox;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox EndReHotKeyBox;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox BeginReHotKeyBox;
     }
 }

@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
 using System.Windows.Forms;
 
 namespace ScreenShot
@@ -25,7 +18,6 @@ namespace ScreenShot
         private void Magnifier_Load(object sender, EventArgs e)
         {
             //pictureBox1.MouseWheel += new MouseEventHandler(MY_MouseWheel);
-
             timer1.Start();
         }
 
@@ -41,17 +33,18 @@ namespace ScreenShot
         {
             this.Location = new Point(Cursor.Position.X + 10, Cursor.Position.Y + 10);
             //放大倍数
-            int n = 4;
+            int n = 2;
             Bitmap bitmap = new Bitmap(pictureBox1.Width / n, pictureBox1.Height / n);
 
             using (Graphics g = Graphics.FromImage(bitmap))
             {
                 // 绘制从当前鼠标位置减去图片一半的屏幕大小到bitmap中
-                g.CopyFromScreen(new Point(Cursor.Position.X - bitmap.Width, Cursor.Position.Y - bitmap.Height), new Point(0, 0), bitmap.Size);
+                g.CopyFromScreen(new Point(Cursor.Position.X - bitmap.Width/n, Cursor.Position.Y - bitmap.Height), new Point(0, 0), new Size(bitmap.Width, bitmap.Height));
             }
             pictureBox1.Image = bitmap;
 
         }
+
 
         //private void MY_MouseWheel(object sender, MouseEventArgs e)
         //{

@@ -29,31 +29,46 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Mask));
+            this.MaskBox = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.MaskBox)).BeginInit();
             this.SuspendLayout();
+            // 
+            // MaskBox
+            // 
+            this.MaskBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MaskBox.Location = new System.Drawing.Point(0, 0);
+            this.MaskBox.Name = "MaskBox";
+            this.MaskBox.Size = new System.Drawing.Size(905, 490);
+            this.MaskBox.TabIndex = 0;
+            this.MaskBox.TabStop = false;
+            this.MaskBox.Paint += new System.Windows.Forms.PaintEventHandler(this.MaskBox_Paint);
+            this.MaskBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MaskBox_MouseDown);
+            this.MaskBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MaskBox_MouseMove);
+            this.MaskBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MaskBox_MouseUp);
             // 
             // Mask
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size(747, 422);
+            this.ClientSize = new System.Drawing.Size(905, 490);
+            this.Controls.Add(this.MaskBox);
             this.DoubleBuffered = true;
+            this.ForeColor = System.Drawing.Color.Black;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MinimizeBox = false;
             this.Name = "Mask";
-            this.Opacity = 0.6D;
             this.TopMost = true;
-            this.TransparencyKey = System.Drawing.Color.Transparent;
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.Mask_Load);
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.Mask_Paint);
-            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Mask_MouseDown);
-            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Mask_MouseMove);
-            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Mask_MouseUp);
+            ((System.ComponentModel.ISupportInitialize)(this.MaskBox)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private System.Windows.Forms.PictureBox MaskBox;
     }
 }

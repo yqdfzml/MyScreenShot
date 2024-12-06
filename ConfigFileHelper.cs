@@ -35,12 +35,30 @@ namespace ScreenShot
 
 
         //写入热键配置文件
-        public void WriteAllConfgig(string configpath)
+        public void WriteAllConfig(string configpath)
         {
             WriteConfig("HotKeys", "NewKeyCombination", "F1", configpath);
             WriteConfig("HotKeys", "AllKeyCombination", "F3", configpath);
             WriteConfig("HotKeys", "CopyAutoCombination", "Control+F3", configpath);
             WriteConfig("HotKeys", "TietuCombination", "F4", configpath);
+            WriteConfig("HotKeys", "BeginReCombination", "Control+F7", configpath);
+            WriteConfig("HotKeys", "EndReCombination", "Control+F2", configpath);
+        }
+
+        //更新配置文件
+        public void UpdateAllConfig(List<MyEnum.HotKeystruct1> hotKeystructs,string configpath)
+        {
+            foreach (var item in hotKeystructs)
+            {
+                WriteConfig("HotKeys", item.functionname, item.keycombina, configpath);
+            }
+
+            //WriteConfig("HotKeys", "NewKeyCombination", "F1", configpath);
+            //WriteConfig("HotKeys", "AllKeyCombination", "F3", configpath);
+            //WriteConfig("HotKeys", "CopyAutoCombination", "Control+F3", configpath);
+            //WriteConfig("HotKeys", "TietuCombination", "F4", configpath);
+            //WriteConfig("HotKeys", "BeginReCombination", "Control+F7", configpath);
+            //WriteConfig("HotKeys", "EndReCombination", "Control+F2", configpath);
         }
 
         //[LastSavepath]
@@ -50,11 +68,9 @@ namespace ScreenShot
         public List<Config> ReadAllConfgig(string path)
         {
             List<Config> configs = new List<Config>();
-
             try
             {
                 string[] lines =  File.ReadAllLines(path);
-
                 foreach (string line in lines)
                 {
                     // 跳过注释行和空行
@@ -77,10 +93,14 @@ namespace ScreenShot
             {
                 Console.WriteLine("Error reading config file: " + ex.Message);
             }
-
-
             return configs;
         }
+
+
+
+
+
+
 
     }
 }

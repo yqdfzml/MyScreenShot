@@ -28,7 +28,13 @@ namespace ScreenShot
             public string functionname;
             public string keycombina;
         }
-        
+
+        public struct HotKeystruct1
+        {
+            public string functionname;
+            public string keycombina;
+        }
+
         //截图类型
         [Flags()]
         public enum ShotType

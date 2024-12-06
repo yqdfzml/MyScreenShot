@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static ScreenShot.MyEnum;
@@ -18,11 +12,7 @@ namespace ScreenShot
 {
     public class Utils
     {
-       
-
         private HotKey HotKey;
-
-
 
         //配置文件
         //#region
@@ -47,7 +37,6 @@ namespace ScreenShot
         {
             DateTime currentTime = DateTime.Now;
             return currentTime.ToString("yyyy-MM-dd_HH-mm-ss-fff");
-
             //string Formatter = currentTime.ToString("yyyy-MM-dd_HH-mm-ss");
             //return Formatter;
         }
@@ -153,17 +142,19 @@ namespace ScreenShot
 
 
         //大小缩放
-        public void Resizeform(double ratio, Form form, Label label, Size size, PictureBox pictureBox)
+        public void Resizeform(double ratio, Form form, Label label, Size size)
         {
             label.Visible = true;
             label.Text = "缩放大小:" + (ratio * 100).ToString() + "%";
-            pictureBox.Width = form.Width = (int)(size.Width * ratio);
-            pictureBox.Height = form.Height = (int)(size.Height * ratio);
+            int newWidth = (int)(size.Width * ratio);
+            int newHeight = (int)(size.Height * ratio);
+            form.ClientSize = new Size(newWidth, newHeight);
+
         }
 
 
         //旋转
-        public void RotateImage(PictureBox pictureBox, Image image, int RotateType)
+        public void RotateImage(Form form, Image image, int RotateType)
         {
             switch (RotateType)
             {
@@ -180,8 +171,9 @@ namespace ScreenShot
                     image.RotateFlip(RotateFlipType.Rotate180FlipY);
                     break;
             }
-            pictureBox.Image = image;
-
+            //return image;
+            form.BackgroundImage = image;
+            form.Invalidate();
         }
 
 
@@ -202,10 +194,10 @@ namespace ScreenShot
         {
             if (!rect.IsEmpty)
             {
-                Bitmap bitmap = new Bitmap(rect.Width, rect.Height);
+                Bitmap bitmap = new Bitmap(rect.Width-4, rect.Height-4);
                 using (Graphics g = Graphics.FromImage(bitmap))
                 {
-                    g.CopyFromScreen(rect.X, rect.Y, 0, 0, rect.Size);
+                    g.CopyFromScreen(rect.X+2, rect.Y+2, 0, 0, rect.Size);
                 }
                 return bitmap;
             }
@@ -229,102 +221,6 @@ namespace ScreenShot
 
         }
 
-
-        //更新注册快捷键函数
-        public bool UpDateHotKey(string keys, int KeyId, IntPtr handle)
-        {
-            return true;
-            ////Console.WriteLine("keys---->" + keys);
-
-            //List<string> TempkeyList = keys.Split('+').ToList();
-
-            //int modifiers = 0;
-            //int vk = 0;
-
-            ////Console.WriteLine("keys0---->" + TempkeyList[0] + "keys1---->" + TempkeyList[1]);
-
-            //foreach (string key in TempkeyList)
-            //{
-            //    switch (key.ToUpper())
-            //    {
-            //        case "CTRL":
-            //            modifiers |= MOD_CONTROL;
-            //            break;
-            //        case "ALT":
-            //            modifiers |= MOD_ALT;
-            //            break;
-            //        case "SHIFT":
-            //            modifiers |= MOD_SHIFT;
-            //            break;
-            //        case "WIN":
-            //            modifiers |= MOD_WIN;
-            //            break;
-            //        case "F1":
-            //            vk |= VK_F1;
-            //            break;
-            //        case "F2":
-            //            vk |= VK_F2;
-            //            break;
-            //        case "F3":
-            //            vk |= VK_F3;
-            //            break;
-            //        case "F4":
-            //            vk |= VK_F4;
-            //            break;
-            //        case "F5":
-            //            vk |= VK_F5;
-            //            break;
-            //        case "F6":
-            //            vk |= VK_F6;
-            //            break;
-            //        case "F7":
-            //            vk |= VK_F7;
-            //            break;
-            //        case "F8":
-            //            vk |= VK_F8;
-            //            break;
-            //        case "F9":
-            //            vk |= VK_F9;
-            //            break;
-            //        case "F10":
-            //            vk |= VK_F10;
-            //            break;
-            //        case "F11":
-            //            vk |= VK_F11;
-            //            break;
-            //        case "F12":
-            //            vk |= VK_F12;
-            //            break;
-            //        case "shift":
-            //            vk |= VK_SHIFT;
-            //            break;
-            //        default:
-            //            if (char.IsLetter(key[0]) && char.IsUpper(key[0]))
-            //            {
-            //                vk = (key[0] - 'A' + (int)Keys.A);
-            //            }
-            //            break;
-            //    }
-            //}
-
-            //if (vk == 0)
-            //{
-            //    // 如果没有指定具体的键（只有修饰键），则无法注册热键  
-            //    MessageBox.Show("热键不能只包含功能键");
-            //    return false;
-            //}
-            //if (!HotKey.RegisterHotKey(handle, KeyId, modifiers, vk))
-            //{
-            //    MessageBox.Show("热键注册失败");
-            //    return false;
-            //}
-            //else
-            //{
-            //    MessageBox.Show("热键注册成功");
-            //}
-
-            //return true;
-        }
 
         //获取尺寸
         public string GetSize(Size size)
@@ -464,7 +360,21 @@ namespace ScreenShot
             return result;
         }
 
-        
+
+        //字符串转rgba颜色值
+
+        public string Torgba(string str)
+        {
+            string rgbastr = str;
+
+            //switch (rgbastr)
+            //{
+            //    case 
+            //}
+
+            return rgbastr;
+
+        }
 
 
     }

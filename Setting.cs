@@ -1,22 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ScreenShot
 {
     public partial class Setting : Form
     {
-
-  
-
-
-
 
         //快捷键冲突状态
         #region
@@ -26,12 +15,18 @@ namespace ScreenShot
         #endregion
 
         //快捷键列表
-        private List<string> hotkeylist = new List<string>();
+        //private List<string> hotkeylist = new List<string>();
+        private List<MyEnum.HotKeystruct1> hotkeylist = new List<MyEnum.HotKeystruct1>();
+
+
+        List<MyEnum.HotKeystruct> hotKeystructs;
 
         public string NewKeyCombination;
         public string AllKeyCombination;
         public string CopyAutoCombination;
         public string TietuCombination;
+        public string BeginReCombination;
+        public string EndReCombination;
 
         //private List<string> hotkeycombinations = new List<string>
         //{
@@ -65,19 +60,22 @@ namespace ScreenShot
 
         private void Setting_Load(object sender, EventArgs e)
         {
-            HotKey.UnRegisterAllHotkeys(parentform.Handle);
+            configpath = parentform.configpath;
+            configFileHelper = parentform.configFileHelper;
             ReadConfig();
+            HotKey.UnRegisterAllHotkeys(parentform.Handle);
+           
         }
 
 
         //读取配置文件
         private void ReadConfig()
         {
-            List<MyEnum.HotKeystruct> hotKeystructs = hotKey.ReadAllHotkeys(parentform.configpath, Handle);
+            hotKeystructs = hotKey.ReadAllHotkeys(parentform.configpath, Handle);
 
             hotKeystructs.ForEach(hotKeystruct =>
             {
-                Console.WriteLine(hotKeystruct.functionname + "---->" + hotKeystruct.keycombina);
+                Console.WriteLine("setting"+hotKeystruct.functionname + "---->" + hotKeystruct.keycombina);
                 
                 switch (hotKeystruct.functionname)
                 {
@@ -93,6 +91,13 @@ namespace ScreenShot
                     case "TietuCombination":
                         TietuCombination =  TietuHotKeyBox.Text = hotKeystruct.keycombina;
                         break;
+                    case "BeginReCombination":
+                        BeginReCombination = BeginReHotKeyBox.Text = hotKeystruct.keycombina;
+                        break;
+                    case "EndReCombination":
+                        EndReCombination = EndReHotKeyBox.Text = hotKeystruct.keycombina;
+                        break;
+
                 }
 
             });
@@ -103,14 +108,39 @@ namespace ScreenShot
         //保存配置
         private void SaveButton_Click(object sender, EventArgs e)
         {
-            hotkeylist.Add(NewKeyCombination);
-            hotkeylist.Add(AllKeyCombination);
-            hotkeylist.Add(CopyAutoCombination);
-            hotkeylist.Add(TietuCombination);
+            hotkeylist.Add(new MyEnum.HotKeystruct1
+            {
+                functionname = "NewKeyCombination",
+                keycombina = NewKeyCombination
+            });
+            hotkeylist.Add(new MyEnum.HotKeystruct1
+            {
+                functionname = "AllKeyCombination",
+                keycombina = AllKeyCombination
+            });
+            hotkeylist.Add(new MyEnum.HotKeystruct1
+            {
+                functionname = "CopyAutoCombination",
+                keycombina = CopyAutoCombination
+            });
+            hotkeylist.Add(new MyEnum.HotKeystruct1
+            {
+                functionname = "TietuCombination",
+                keycombina = TietuCombination
+            });
+            hotkeylist.Add(new MyEnum.HotKeystruct1
+            {
+                functionname = "BeginReCombination",
+                keycombina = BeginReCombination
+            });
+            hotkeylist.Add(new MyEnum.HotKeystruct1
+            {
+                functionname = "EndReCombination",
+                keycombina = EndReCombination
+            });
+            configFileHelper.UpdateAllConfig(hotkeylist, configpath);
+            parentform.ReadConfig();
 
-            Console.WriteLine("-sad--->"+hotkeylist);
-
-            hotKey.Updatehotkey(hotkeylist, parentform.Handle);
         }
 
         //重置
@@ -169,6 +199,26 @@ namespace ScreenShot
         private void TietuBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             e.Handled = true;
+        }
+
+        private void BeginReHotKeyBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void EndReHotKeyBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void BeginReHotKeyBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            BeginReCombination = BeginReHotKeyBox.Text = utils.UpdateHotKeyCom(e);
+        }
+
+        private void EndReHotKeyBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            EndReCombination = EndReHotKeyBox.Text = utils.UpdateHotKeyCom(e);
         }
     }
 }

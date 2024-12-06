@@ -1,23 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Configuration;
-using System.Drawing.Printing;
 using System.IO;
-using System.Drawing.Imaging;
-using System.Security.Policy;
-using MyScreenShot.Properties;
-using System.Runtime.Remoting.Contexts;
-using System.Runtime.InteropServices;
+using MyScreenShot;
 using System.Diagnostics;
-
+using static ScreenShot.MyEnum;
 
 
 namespace ScreenShot
@@ -29,6 +17,9 @@ namespace ScreenShot
         private Mask Mask;
         //设置窗口
         private Setting setting;
+
+        private Recording  recording;
+
         public bool CopyAuto = false;
         //快捷键是否禁用
         public bool HotKeyStus;
@@ -36,6 +27,17 @@ namespace ScreenShot
         public string LastSavePath = "";
         //放大镜
         public bool loupeRes = false;
+        //拾色器
+        public Picker Picker = new Picker();
+        public Point p;
+        public bool pickres;
+        private PixelDis pixeldis = new PixelDis();
+
+        public bool isrecord = false;
+
+        private string end;
+        private string begin;
+
 
         //快捷键注册
         #region
@@ -60,6 +62,7 @@ namespace ScreenShot
         private HotKey hotKey = new HotKey();
 
 
+        private List<MyEnum.HotKeystruct> hotKeystructs;
 
         public Form1()
         {
@@ -70,12 +73,21 @@ namespace ScreenShot
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Init();
+
+
+            //ShadowWindow shadowWindow = new ShadowWindow();
+            //shadowWindow.Show();
+
+            pickres = PickerToolStripMenuItem.Checked;
+          
+
+
+        Init();
             this.BeginInvoke(new Action(() =>
             {
                 this.Hide();
             }));
-           
+
         }
 
         protected override void WndProc(ref Message m)
@@ -97,15 +109,23 @@ namespace ScreenShot
                     case 103:
                         TieTuToolStripMenuItem_Click(null, null);
                         break;
+                    case 104:
+                        recordGIFToolStripMenuItem_Click(null, null);
+                        break;
+                    case 105:
+                        recording.recordend();
+                        break;
+
                 }
             }
             base.WndProc(ref m);
         }
 
         //新建截图
-        private void NewToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void NewToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Mask = new Mask(this, (int)MyEnum.ShotType.NewShot);
+            Bitmap bitmap = await utils.ScreenBack();
+            Mask = new Mask(this, (int)MyEnum.ShotType.NewShot,bitmap);
             Mask.Show();
         }
         //全屏截图
@@ -127,8 +147,18 @@ namespace ScreenShot
         //检查是否创建ini配置文件
         private bool ConfigExist()
         {
-            //Console.WriteLine(File.Exists(Path.Combine(Directory.GetCurrentDirectory(), "config.ini")));
             return File.Exists(Path.Combine(Directory.GetCurrentDirectory(), "config.ini"));
+        }
+
+        //检查是否创建video文件夹
+        private bool CVideoExist()
+        {
+            return Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), "video"));
+        }
+        //检查是否创建gif文件夹
+        private bool GifExist()
+        {
+            return Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), "gif"));
         }
 
         private void Init()
@@ -138,7 +168,22 @@ namespace ScreenShot
             {
                 CreateConfigInit(configFileHelper, configpath);
             }
-            List<MyEnum.HotKeystruct> hotKeystructs = hotKey.RegisterAllHotkeys(configpath, Handle);
+            if (!CVideoExist())
+            {
+                Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "video"));
+            }
+            if (!GifExist())
+            {
+                Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "gif"));
+            }
+            ReadConfig();
+            loupeRes = loupeToolStripMenuItem.Checked;
+            HotKeyStus = UnHotKeyToolStripMenuItem.Checked;
+        }
+
+        public void ReadConfig()
+        {
+            hotKeystructs = hotKey.RegisterAllHotkeys(configpath, Handle);
             hotKeystructs.ForEach(hotKeystruct =>
             {
                 Console.WriteLine(hotKeystruct.functionname + "---->" + hotKeystruct.regeditres);
@@ -157,24 +202,65 @@ namespace ScreenShot
                     case "TietuCombination":
                         TieTuToolStripMenuItem.ShortcutKeyDisplayString = hotKeystruct.keycombina;
                         break;
+                    case "BeginReCombination":
+                        begin = recordGIFToolStripMenuItem.ShortcutKeyDisplayString = hotKeystruct.keycombina;
+                        break;
+                    case "EndReCombination":
+                        end = hotKeystruct.keycombina;
+                        break;
                 }
-
             });
-            loupeRes = loupeToolStripMenuItem.Checked;
-            HotKeyStus = UnHotKeyToolStripMenuItem.Checked;
+            string fails ="";
+            List<string> sds = hotKey.failhotkeys;
+            foreach (string s in sds)
+            {
+                Console.WriteLine(s);
+                switch (s)
+                {
+                    case "NewKeyCombination":
+                        fails += "新建截图热键注册失败\n";
+                        break;
+                    case "AllKeyCombination":
+                        fails += "全屏截图热键注册失败\n";
+                        break;
+                    case "CopyAutoCombination":
+                        fails += "自动复制热键注册失败\n";
+                        break;
+                    case "TietuCombination":
+                        fails +="贴图热键注册失败\n";
+                        break;
+                    case "BeginReCombination":
+                        fails +="开始录制热键注册失败\n";
+                        break;
+                    case "EndReCombination":
+                        fails +="结束录制热键注册失败\n";
+                        break;
+                }
+            }
+            if(fails != string.Empty)
+            {
+                MessageBox.Show(fails);
+            }
+
         }
 
         //首次生成默认ini配置文件
         public void CreateConfigInit(ConfigFileHelper configFileHelper, string configpath)
         {
-            configFileHelper.WriteAllConfgig(configpath);
+            configFileHelper.WriteAllConfig(configpath);
+
         }
 
         //截图自动复制
-        private void AutoCopyToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void AutoCopyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Mask = new Mask(this, (int)MyEnum.ShotType.CopyShot);
-            Mask.Show();
+            Bitmap bitmap = await utils.ScreenBack();
+            if(Mask == null)
+            {
+                Mask = new Mask(this, (int)MyEnum.ShotType.CopyShot, bitmap);
+                Mask.Show();
+            }
+            bitmap.Dispose();
         }
         //重启
         private void RestartToolStripMenuItem_Click(object sender, EventArgs e)
@@ -215,7 +301,7 @@ namespace ScreenShot
         //禁用快捷键
         private void UnHotKeyToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
-            //Console.WriteLine("sadasd"+UnHotKeyToolStripMenuItem.Checked);
+            Console.WriteLine("sadasd"+UnHotKeyToolStripMenuItem.Checked);
             HotKeyStus = UnHotKeyToolStripMenuItem.Checked;
         }
         //放大镜
@@ -234,7 +320,67 @@ namespace ScreenShot
                 loupewindow.Dispose();
             }
         }
+        
+        //拾色器
+        private void PickerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            
+        }
 
+        private void PickerToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            pickres = PickerToolStripMenuItem.Checked;
+            Console.WriteLine("-----" + pickres);
+            if (pixeldis != null)
+            {
+                pixeldis.Show();
+            }
+            if (!pickres)
+            {
+                pixeldis.Close();
+                pixeldis.Dispose();
+            }
+        }
 
+        private void RecordingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            
+
+        }
+
+        private void AllrecorderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int recodertype = 1;
+            recording = new Recording(recodertype,false,this);
+            recording.Show();
+        }
+
+        private void ArearecoderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int recodertype = 1;
+            recording = new Recording(recodertype,true,this);
+            recording.Show();
+        }
+
+        private void recordGIFToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            isrecord = !isrecord;
+            if (isrecord)
+            {
+                recordGIFToolStripMenuItem.Text = "停止录制";
+                recordGIFToolStripMenuItem.ShortcutKeyDisplayString = end;
+                int recodertype = 0;
+                recording = new Recording(recodertype, true, this);
+                recording.Show();
+            }
+            else
+            {
+                recording.recordend();
+                recordGIFToolStripMenuItem.Text = "录制GIF";
+                recordGIFToolStripMenuItem.ShortcutKeyDisplayString = begin;
+            }
+            
+        }
     }
 }

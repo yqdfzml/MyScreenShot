@@ -18,10 +18,16 @@ using MyScreenShot.Properties;
 using System.Runtime.Remoting.Contexts;
 using static ScreenShot.MyEnum;
 
+
+
+
+
 namespace ScreenShot
 {
     public class HotKey
     {
+        public List<string> failhotkeys = new List<string>();
+
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, Keys vk);
 
@@ -55,6 +61,10 @@ namespace ScreenShot
                     Console.WriteLine(index);
                     bool res = RegisterHotKey(handle, index, hotKeystruct.modifiers, hotKeystruct.keys);
                     hotKeystruct.regeditres = res;
+                    if (!res)
+                    {
+                        failhotkeys.Add(hotKeystruct.functionname);
+                    }
                     hotKeysList.Add(hotKeystruct);
                     index++;
                 }
@@ -62,6 +72,7 @@ namespace ScreenShot
             }
             return hotKeysList;
         }
+
 
         //读取全部热键
 
@@ -78,19 +89,21 @@ namespace ScreenShot
                     hotKeystruct.keycombina = config.ConfigValue;
                     hotKeysList.Add(hotKeystruct);
                 }
-
             }
             return hotKeysList;
         }
 
 
+
+
+
         //卸载全部热键
         public static void UnRegisterAllHotkeys(IntPtr handle)
         {
-            for(int i =100;i<104;i++)
+            for(int i =100;i<105;i++)
             {
-                //UnregisterHotKey(handle, i);
-                Console.WriteLine(i + "----unre-->" + UnregisterHotKey(handle, i));
+                UnregisterHotKey(handle, i);
+                //Console.WriteLine(i + "----unre-->" + UnregisterHotKey(handle, i));
             }
 
         }
